@@ -1,0 +1,12 @@
+Project for adding a quote bot to slack.
+
+The end result should be the ability to store and retrieve quotes via a command
+to a slack bot:
+
+@bot addquote "some quote here"
+@bot showquote
+... "some quote here"
+
+The quotes should be stored in a persistent database, and the retrieval of the
+quotes from that database should be randomized.
+
