@@ -10,3 +10,14 @@ to a slack bot:
 The quotes should be stored in a persistent database, and the retrieval of the
 quotes from that database should be randomized.
 
+--Setting up the environment--
+$ source slackquotebot/bin/activate
+$ pip install slackclient
+
+Deactivate the environment 
+$ deactivate
+
+Delete the environment
+$ deactivate
+$ rm -rf slackquotebot
+

@@ -8,6 +8,26 @@
 
 # TODO: import necessary slack client libraries
 # TODO: declare necessary constants
+import argparse
+from slackclient import SlackClient
+
+# Pull the bot id and bot token from command line arguments
+parser = argparse.ArgumentParser(description='listen for bot commands on slack')
+parser.add_argument('--bot_id', type=str, help='the ID of the slack chatbot')
+parser.add_argument(
+  '--slack_bot_token', type=str, help='the Token of the slack chatbot')
+args = parser.parse_args()
+
+# Set constants
+BOT_ID = args.bot_id
+SLACK_BOT_TOKEN = args.slack_bot_token
+READ_WEBSOCKET_DELAY = 1 # 1 second delay between sampling the firehose
+
+# Raise an error if a required flag isn't set
+if not BOT_ID:
+  parser.error('Bot ID not given')
+if not SLACK_BOT_TOKEN:
+  parser.error('Slack Bot Token not given')
 
 
 def handle_command(command, channel):
@@ -46,6 +66,20 @@ def parse_slack_input():
   pass
 
 
+def main():
+  slack_client = SlackClient(SLACK_BOT_TOKEN)
+  if slack_client.rtm_connect():
+    print("Quotebot is connected and running.")
+    # infinite loop to continuously consume slack data from rtm api
+    while True:
+      command, channel = parse_slack_input(slack_client.rtm_read())
+      if command and channel:
+        handle_command(command, channel)
+      time.sleep(READ_WEBSOCKET_DELAY)
+  else:
+    print("Connection failed. Invalid Slack token or bot ID?")
+
+
 if __name__ == "__main__":
-  # infinite loop to continuously consume slack data from rtm api
-  pass
+  main()
+  
