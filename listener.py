@@ -9,6 +9,7 @@
 # TODO: import necessary slack client libraries
 # TODO: declare necessary constants
 import argparse
+import quotebot
 from slackclient import SlackClient
 
 # Pull the bot id and bot token from command line arguments
