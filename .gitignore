@@ -1,3 +1,4 @@
 slackquotebot/
 *.pyc
 *.swp
+secrets

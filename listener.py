@@ -6,29 +6,14 @@
   - trigger handlers based on those commands
 """
 
-# TODO: import necessary slack client libraries
-# TODO: declare necessary constants
 import argparse
 import quotebot
+import time
 from slackclient import SlackClient
 
-# Pull the bot id and bot token from command line arguments
-parser = argparse.ArgumentParser(description='listen for bot commands on slack')
-parser.add_argument('--bot_id', type=str, help='the ID of the slack chatbot')
-parser.add_argument(
-  '--slack_bot_token', type=str, help='the Token of the slack chatbot')
-args = parser.parse_args()
-
 # Set constants
-BOT_ID = args.bot_id
-SLACK_BOT_TOKEN = args.slack_bot_token
 READ_WEBSOCKET_DELAY = 1 # 1 second delay between sampling the firehose
-
-# Raise an error if a required flag isn't set
-if not BOT_ID:
-  parser.error('Bot ID not given')
-if not SLACK_BOT_TOKEN:
-  parser.error('Slack Bot Token not given')
+COMMANDS = ['!quote', '!addquote', '!deletequote']
 
 
 def handle_command(command, channel):
@@ -45,10 +30,10 @@ def handle_command(command, channel):
     The responses constructed by the quotebot layer are sent to the appropriate
     slack channel.
   """
-  pass
+  print(command, channel)
 
 
-def parse_slack_input():
+def parse_slack_input(slack_rtm_output):
   """Decides if a message has been directed at the bot.
 
     Takes the firehose of information from the Slack Real Time Messaging API and
@@ -64,11 +49,36 @@ def parse_slack_input():
     - command (string) the command directed at the bot
     - channel (string) the channel the command originated from
  """
-  pass
+  output_list = slack_rtm_output
+  if output_list and len(output_list) > 0:
+    for output in output_list:
+      if 'text' in output and any(cmd in output['text'] for cmd in COMMANDS):
+        return output['text'], output['channel']
+
+  return None, None
+
+
+def parse_arguments():
+  """Pull the bot token from the command line.
+
+    Returns:
+    - slack_bot_token (string) the bot api access token
+ """
+  parser = argparse.ArgumentParser(
+    description='listen for bot commands on slack')
+  parser.add_argument(
+    '--slack_bot_token', type=str, help='the Token of the slack chatbot')
+  args = parser.parse_args()
+  slack_bot_token = args.slack_bot_token
+  if not slack_bot_token:
+    parser.error('Slack Bot Token not given')
+
+  return slack_bot_token
 
 
 def main():
-  slack_client = SlackClient(SLACK_BOT_TOKEN)
+  slack_bot_token = parse_arguments()
+  slack_client = SlackClient(slack_bot_token)
   if slack_client.rtm_connect():
     print("Quotebot is connected and running.")
     # infinite loop to continuously consume slack data from rtm api
