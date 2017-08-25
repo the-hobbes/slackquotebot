@@ -37,8 +37,7 @@ def parse_slack_input(slack_rtm_output):
   """Decides if a message has been directed at the bot.
 
     Takes the firehose of information from the Slack Real Time Messaging API and
-    determines if a command has been directed at the quotebot. The command is 
-    then sent to the handle_command function to be properly handled.
+    determines if a command has been entered.
 
     Arguments:
       - slack_rtm_input (list) the result of calling rtm_read() from a slack
@@ -52,7 +51,8 @@ def parse_slack_input(slack_rtm_output):
   output_list = slack_rtm_output
   if output_list and len(output_list) > 0:
     for output in output_list:
-      if 'text' in output and any(cmd in output['text'] for cmd in COMMANDS):
+      if ('text' in output 
+          and any(output['text'].startswith(cmd) for cmd in COMMANDS)):
         return output['text'], output['channel']
 
   return None, None
