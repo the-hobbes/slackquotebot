@@ -20,7 +20,10 @@ def add_quote(quote):
 			- message (string) a message indicating whether or not the quote has been
 				added to the database
 	"""
-	return "Addquote"
+	id = data.save(quote)
+	if id == -1:
+		return "There was an error saving the quote"
+	return "Quote {} saved".format(id)
 
 
 def retrieve_random_quote():
@@ -30,21 +33,8 @@ def retrieve_random_quote():
 			- quote (string) the quote retrieved from the database, or an error 
 				message
 	"""
-	return "Somequote"
-
-
-def retrieve_specific_quote(quote_id):
-	"""Fetches a specific quote from the database.
+	return data.retrieve()
 	
-		Arguments:
-			- quote_id (integer) the id of the quote to be retrieved
-
-		Returns:
-			- quote (string) the quote retrieved from the database, or an error 
-				message
-	"""
-	pass
-
 
 def remove_quote(quote_id):
 	"""Removes a specific quote from the database.
@@ -56,7 +46,10 @@ def remove_quote(quote_id):
 			- message (string) a message indicating whether or not the quote has been
 				removed from the database
 	"""
-	return "Removed quote"
+	success = data.delete(quote_id)
+	if not success:
+		return "There was an error deleting quote {}".format(quote_id)
+	return "Quote {} successfully removed".format(quote_id)
 
 
 def command_not_found(cmd):

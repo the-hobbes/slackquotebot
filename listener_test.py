@@ -8,9 +8,6 @@ from mock import MagicMock
 class TestListener(unittest.TestCase):
 	# TODO: Refactor these into parameterized tests.
 
-  def setUp(self):
-    pass
-
   def test_handle_addquote(self):
     expected_response = "quote added"
     quotebot.add_quote = MagicMock(return_value=expected_response)

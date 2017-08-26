@@ -5,17 +5,14 @@
 """
 
 
-def retrieve(quote_id=None):
+def retrieve():
 	"""Retrieves quotes from the database.
-
-		Arguments:
-			- quote_id (integer) the id of the quote to retrieve. If no quote_id is
-				given, then a random quote is retrieved
 
 		Returns:
 			- quote (string) the quote obtained from the database, or an error 
 				message
 	"""
+	# TODO: catch and log read errors at this level
 	pass
 
 
@@ -29,6 +26,7 @@ def save(quote):
 			- quote_id (integer) the id of the newly added quote. -1 if the save
 				operation failed
 	"""
+	# TODO: catch and log mutate errors at this level
 	pass
 
 
@@ -41,4 +39,5 @@ def delete(quote_id):
 		Returns:
 			- removal_status (boolean), true if the quote was removed successfully
 	"""
+	# TODO: catch and log mutate errors at this level
 	pass
