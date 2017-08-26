@@ -13,10 +13,22 @@ from slackclient import SlackClient
 
 # Set constants
 READ_WEBSOCKET_DELAY = 1 # 1 second delay between sampling the firehose
-COMMANDS = ['!quote', '!addquote', '!deletequote']
+COMMANDS = ['!addquote', '!deletequote', '!quote',]
 
 
-def handle_command(command, channel):
+def write_response(response, channel, slack_client):
+  """Write responses back to the chat channel.
+
+    Arguments:
+    - response (string) the response to write
+    - channel (string) the id of the channel to write to
+    - slack_client (SlackClient) the client to perform the call
+  """
+  slack_client.api_call(
+    'chat.postMessage', channel=channel, text=response, as_user=True)
+
+
+def handle_command(command):
   """Receives commands directed at the bot and takes the appropriate action.
 
     The actual work of executing the command is performed by the business logic 
@@ -25,12 +37,22 @@ def handle_command(command, channel):
 
     Arguments:
       - command (string) the command to perform
-      - channel (string) the channel to send the response 
-
-    The responses constructed by the quotebot layer are sent to the appropriate
-    slack channel.
+    Returns:
+      - response (string) the response to write to the channel
   """
-  print(command, channel)
+  cmd_list = command.split(' ', 1)
+  cmd = cmd_list[0]
+
+  if cmd == '!addquote':
+    response = quotebot.add_quote(cmd_list[1])
+  elif cmd == '!deletequote':
+    response = quotebot.remove_quote(cmd_list[1])
+  elif cmd == '!quote':
+    response = quotebot.retrieve_random_quote()
+  else:
+    response = quotebot.command_not_found(cmd)
+
+  return response
 
 
 def parse_slack_input(slack_rtm_output):
@@ -85,7 +107,8 @@ def main():
     while True:
       command, channel = parse_slack_input(slack_client.rtm_read())
       if command and channel:
-        handle_command(command, channel)
+        response = handle_command(command)
+        write_response(response, channel, slack_client)
       time.sleep(READ_WEBSOCKET_DELAY)
   else:
     print("Connection failed. Invalid Slack token or bot ID?")

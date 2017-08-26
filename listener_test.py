@@ -1,15 +1,42 @@
 """Tests for listener.py"""
 
 import listener
+import quotebot
 import unittest
+from mock import MagicMock
 
 class TestListener(unittest.TestCase):
+	# TODO: Refactor these into parameterized tests.
 
   def setUp(self):
     pass
 
-  def test_handle_command(self):
-    pass
+  def test_handle_addquote(self):
+    expected_response = "quote added"
+    quotebot.add_quote = MagicMock(return_value=expected_response)
+    fake_command = "!addquote add this quote"
+    received_response = listener.handle_command(fake_command)
+    self.assertEqual(expected_response, received_response)
+
+  def test_handle_deletequote(self):
+    expected_response = "quote deleted"
+    quotebot.remove_quote = MagicMock(return_value=expected_response)
+    fake_command = "!deletequote delete this quote"
+    received_response = listener.handle_command(fake_command)
+    self.assertEqual(expected_response, received_response)
+
+  def test_handle_getquote(self):
+    expected_response = "quote retrieved"
+    quotebot.retrieve_random_quote = MagicMock(return_value=expected_response)
+    fake_command = "!quote"
+    received_response = listener.handle_command(fake_command)
+    self.assertEqual(expected_response, received_response)
+
+  def test_handle_bad_command(self):
+    expected_response = "Command !iwontwork not found"
+    fake_command = "!iwontwork"
+    received_response = listener.handle_command(fake_command)
+    self.assertEqual(expected_response, received_response)
 
   def test_parse_slack_input(self):
     fake_input = [{

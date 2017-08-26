@@ -20,7 +20,7 @@ def add_quote(quote):
 			- message (string) a message indicating whether or not the quote has been
 				added to the database
 	"""
-	pass
+	return "Addquote"
 
 
 def retrieve_random_quote():
@@ -30,7 +30,7 @@ def retrieve_random_quote():
 			- quote (string) the quote retrieved from the database, or an error 
 				message
 	"""
-	pass
+	return "Somequote"
 
 
 def retrieve_specific_quote(quote_id):
@@ -56,4 +56,8 @@ def remove_quote(quote_id):
 			- message (string) a message indicating whether or not the quote has been
 				removed from the database
 	"""
-	pass
+	return "Removed quote"
+
+
+def command_not_found(cmd):
+	return "Command {} not found".format(cmd)
