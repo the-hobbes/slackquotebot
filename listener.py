@@ -6,14 +6,15 @@
   - trigger handlers based on those commands
 """
 
-import argparse
 import quotebot
+import settings
 import time
+from ConfigParser import SafeConfigParser
 from slackclient import SlackClient
 
 # Set constants
 READ_WEBSOCKET_DELAY = 1 # 1 second delay between sampling the firehose
-COMMANDS = ['!addquote', '!deletequote', '!quote',]
+COMMANDS = ['!addquote', '!deletequote', '!quote']
 
 
 def write_response(response, channel, slack_client):
@@ -80,27 +81,25 @@ def parse_slack_input(slack_rtm_output):
   return None, None
 
 
-def parse_arguments():
-  """Pull the bot token from the command line.
+def parse_config():
+  """Parses a config file containing connection secrets."""
+  parser = SafeConfigParser()
+  parser.read("secrets")
 
-    Returns:
-    - slack_bot_token (string) the bot api access token
- """
-  parser = argparse.ArgumentParser(
-    description='listen for bot commands on slack')
-  parser.add_argument(
-    '--slack_bot_token', type=str, help='the Token of the slack chatbot')
-  args = parser.parse_args()
-  slack_bot_token = args.slack_bot_token
-  if not slack_bot_token:
-    parser.error('Slack Bot Token not given')
-
-  return slack_bot_token
+  settings.SECRETS['slack_bot_token'] = parser.get(
+    "slack_credentials", "bot_api_access_token")
+  settings.SECRETS['dbname'] = parser.get(
+    "db_credentials", "dbname")
+  settings.SECRETS['user'] = parser.get(
+    "db_credentials", "role_account")
+  settings.SECRETS['password'] = parser.get(
+    "db_credentials", "password")
 
 
 def main():
-  slack_bot_token = parse_arguments()
-  slack_client = SlackClient(slack_bot_token)
+  settings.init()
+  parse_config()
+  slack_client = SlackClient(settings.SECRETS['slack_bot_token'])
   if slack_client.rtm_connect():
     print("Quotebot is connected and running.")
     # infinite loop to continuously consume slack data from rtm api

@@ -2,3 +2,4 @@ slackquotebot/
 *.pyc
 *.swp
 secrets
+notes.txt
