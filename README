@@ -1,23 +1,15 @@
-Project for adding a quote bot to slack.
+# Quotebot
+(A Slack bot for storing and retrieving quotes.)
 
-The end result should be the ability to store and retrieve quotes via a command
-to a slack bot:
+## Purpose
+If you've ever found yourself wanting to preserve an amusing statement from a
+coworker or friend, this bot is for you. You can add and retrieve quotes from a
+slack channel the bot is invited to, providing an amusing and window into the
+history of your group.
 
-@bot addquote "some quote here"
-@bot showquote
-... "some quote here"
-
-The quotes should be stored in a persistent database, and the retrieval of the
-quotes from that database should be randomized.
-
---Setting up the environment--
-$ source slackquotebot/bin/activate
-$ pip install slackclient
-
-Deactivate the environment 
-$ deactivate
-
-Delete the environment
-$ deactivate
-$ rm -rf slackquotebot
-
+## Usage 
+The quotebot listens to the slack channel where it is invited for three
+commands: 
+- !addquote, used to add a new quote. For example: !quote <user> I'm a quote.
+- !quote, used to retrieve a random quote from the database.
+- !deletequote, used to delete a specific quote from the database
