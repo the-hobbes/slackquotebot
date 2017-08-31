@@ -4,8 +4,13 @@
   quotes as instructed.
 """
 import listener
+import logging
+import pprint
 import psycopg2
 import settings
+
+
+TABLE = "slackquotebot"
 
 
 def connect():
@@ -13,11 +18,13 @@ def connect():
     settings.SECRETS["dbname"], 
     settings.SECRETS["user"], 
     settings.SECRETS["password"])
-  conn = psycopg2.connect(conn_s)
-  cursor = conn.cursor()
-  cursor.execute("SELECT * FROM quotetable")
-  records = cursor.fetchall()
-  pprint.pprint(records)
+  connection = psycopg2.connect(conn_s)
+  cursor = connection.cursor()
+
+  return connection, cursor
+  # cursor.execute("SELECT * FROM quotetable")
+  # records = cursor.fetchall()
+  # pprint.pprint(records)
 
 
 def retrieve():
@@ -30,7 +37,7 @@ def retrieve():
   # TODO: catch and log read errors at this level
   # TODO: pass retrieval information/query to connect
   # TODO: fix password auth failure
-  connect()
+  connection, cursor = connect()
     
 
 def save(quote):
@@ -43,8 +50,18 @@ def save(quote):
       - quote_id (integer) the id of the newly added quote. -1 if the save
         operation failed
   """
-  # TODO: catch and log mutate errors at this level
-  pass
+  quote_id = -1
+  try:
+    connection, cursor = connect()
+    cursor.execute("INSERT INTO %s (quote_blob) VALUES (%s)", TABLE, quote)
+    quote_id = cursor.fetchone()[0]
+    connection.commit()
+    cursor.close()
+    connection.close()
+  except psycopg2.Error as e::
+    logging.error("Commit failed with errorcode %s" % e.pgerror)
+
+  return quote_id
 
 
 def delete(quote_id):
@@ -57,4 +74,4 @@ def delete(quote_id):
       - removal_status (boolean), true if the quote was removed successfully
   """
   # TODO: catch and log mutate errors at this level
-  pass
+  connection, cursor = connect()

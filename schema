@@ -32,6 +32,42 @@ CREATE TABLE quotetable (
 ALTER TABLE quotetable OWNER TO slackquotebot;
 
 --
+-- Name: quotetable_quote_id_seq; Type: SEQUENCE; Schema: public; Owner: slackquotebot
+--
+
+CREATE SEQUENCE quotetable_quote_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE quotetable_quote_id_seq OWNER TO slackquotebot;
+
+--
+-- Name: quotetable_quote_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: slackquotebot
+--
+
+ALTER SEQUENCE quotetable_quote_id_seq OWNED BY quotetable.quote_id;
+
+
+--
+-- Name: quote_id; Type: DEFAULT; Schema: public; Owner: slackquotebot
+--
+
+ALTER TABLE ONLY quotetable ALTER COLUMN quote_id SET DEFAULT nextval('quotetable_quote_id_seq'::regclass);
+
+
+--
+-- Name: quotetable_pkey; Type: CONSTRAINT; Schema: public; Owner: slackquotebot
+--
+
+ALTER TABLE ONLY quotetable
+    ADD CONSTRAINT quotetable_pkey PRIMARY KEY (quote_id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
