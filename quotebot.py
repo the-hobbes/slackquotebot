@@ -14,13 +14,14 @@ def add_quote(quote):
 	"""Adds a quote to the database via the data layer.
 
 		Arguments:
-			- quote (string) the quote to be added to the database
+			- quote (unicode) the quote to be added to the database
 
 		Returns:
 			- message (string) a message indicating whether or not the quote has been
 				added to the database
 	"""
-	id = data.save(quote)
+	s_quote = str(quote)
+	id = data.save(s_quote)
 	if id == -1:
 		return "There was an error saving the quote"
 	return "Quote {} saved".format(id)
@@ -30,10 +31,14 @@ def retrieve_random_quote():
 	"""Fetches a random quote from the database.
 	
 		Returns:
-			- quote (string) the quote retrieved from the database, or an error 
+			- result (string) the quote retrieved from the database, or an error 
 				message
 	"""
-	return data.retrieve()
+	result = data.retrieve()
+	if result == -1:
+		return ":( there was an error getting a quote."
+
+	return result
 	
 
 def remove_quote(quote_id):

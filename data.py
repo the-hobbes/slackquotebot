@@ -10,7 +10,8 @@ import psycopg2
 import settings
 
 
-TABLE = "slackquotebot"
+TABLE = "quotetable"
+COLUMN = "quote_blob"
 
 
 def connect():
@@ -22,22 +23,23 @@ def connect():
   cursor = connection.cursor()
 
   return connection, cursor
-  # cursor.execute("SELECT * FROM quotetable")
-  # records = cursor.fetchall()
-  # pprint.pprint(records)
 
 
 def retrieve():
   """Retrieves quotes from the database.
 
     Returns:
-      - quote (string) the quote obtained from the database, or an error 
-        message
+      - quote (string|int) the quote obtained from the database, or an error 
+        code, of -1
   """
-  # TODO: catch and log read errors at this level
-  # TODO: pass retrieval information/query to connect
-  # TODO: fix password auth failure
-  connection, cursor = connect()
+  quote = -1
+  try:
+    connection, cursor = connect()
+    quote = None # TODO: grab quote here
+  except psycopg2.Error as e:
+    logging.error("Retrieve failed with error %s" % e.pgerror)
+
+  return quote
     
 
 def save(quote):
@@ -53,13 +55,13 @@ def save(quote):
   quote_id = -1
   try:
     connection, cursor = connect()
-    cursor.execute("INSERT INTO %s (quote_blob) VALUES (%s)", TABLE, quote)
+    cursor.execute("INSERT INTO %s (%s) VALUES (%s)", (TABLE, COLUMN, quote))
     quote_id = cursor.fetchone()[0]
     connection.commit()
     cursor.close()
     connection.close()
-  except psycopg2.Error as e::
-    logging.error("Commit failed with errorcode %s" % e.pgerror)
+  except psycopg2.Error as e:
+    logging.error("Commit failed with error %s" % e.pgerror)
 
   return quote_id
 
@@ -73,5 +75,12 @@ def delete(quote_id):
     Returns:
       - removal_status (boolean), true if the quote was removed successfully
   """
-  # TODO: catch and log mutate errors at this level
-  connection, cursor = connect()
+  status = False
+  try:
+    connection, cursor = connect()
+    status = True # TODO: set this properly from the delete
+  except psycopg2.Error as e:
+    logging.error("Delete failed with error %s" % e.pgerror)
+
+  return status
+  
