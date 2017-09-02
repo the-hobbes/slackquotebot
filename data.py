@@ -10,10 +10,6 @@ import psycopg2
 import settings
 
 
-TABLE = "quotetable"
-COLUMN = "quote_blob"
-
-
 def connect():
   conn_s = "host='localhost' dbname='{0}' user='{1}' password='{2}'".format(
     settings.SECRETS["dbname"], 
@@ -37,7 +33,7 @@ def retrieve():
     connection, cursor = connect()
     quote = None # TODO: grab quote here
   except psycopg2.Error as e:
-    logging.error("Retrieve failed with error %s" % e.pgerror)
+    logging.error("Retrieve failed with error: %s" % e)
 
   return quote
     
@@ -55,13 +51,15 @@ def save(quote):
   quote_id = -1
   try:
     connection, cursor = connect()
-    cursor.execute("INSERT INTO %s (%s) VALUES (%s)", (TABLE, COLUMN, quote))
+    cursor.execute(
+      "INSERT INTO quotetable (quote_blob) VALUES (%s) RETURNING quote_id;",
+      (quote,))
     quote_id = cursor.fetchone()[0]
     connection.commit()
     cursor.close()
     connection.close()
   except psycopg2.Error as e:
-    logging.error("Commit failed with error %s" % e.pgerror)
+    logging.error("Commit failed with error: %s" % e)
 
   return quote_id
 
@@ -80,7 +78,7 @@ def delete(quote_id):
     connection, cursor = connect()
     status = True # TODO: set this properly from the delete
   except psycopg2.Error as e:
-    logging.error("Delete failed with error %s" % e.pgerror)
+    logging.error("Delete failed with error: %s" % e)
 
   return status
   

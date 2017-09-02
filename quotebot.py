@@ -24,7 +24,7 @@ def add_quote(quote):
 	id = data.save(s_quote)
 	if id == -1:
 		return "There was an error saving the quote"
-	return "Quote {} saved".format(id)
+	return "Quote #{} saved".format(id)
 
 
 def retrieve_random_quote():
