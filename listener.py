@@ -45,10 +45,16 @@ def handle_command(command):
   cmd = cmd_list[0]
 
   if cmd == '!addquote':
+    if len(cmd_list) <= 1:
+      return "gimme a quote to add"
     response = quotebot.add_quote(cmd_list[1])
   elif cmd == '!deletequote':
+    if len(cmd_list) <= 1:
+      return "gimme a quote number to delete"
     response = quotebot.remove_quote(cmd_list[1])
   elif cmd == '!quote':
+    if len(cmd_list) != 1:  # TODO: test this
+      return "I don't understand that stuff after '!quote'"
     response = quotebot.retrieve_random_quote()
   else:
     response = quotebot.command_not_found(cmd)

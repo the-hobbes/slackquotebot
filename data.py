@@ -76,7 +76,11 @@ def delete(quote_id):
   status = False
   try:
     connection, cursor = connect()
-    status = True # TODO: set this properly from the delete
+    cursor.execute("DELETE FROM quotetable WHERE quote_id = %s;", (quote_id,))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    status = True
   except psycopg2.Error as e:
     logging.error("Delete failed with error: %s" % e)
 
