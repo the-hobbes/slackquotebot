@@ -6,6 +6,7 @@
   - trigger handlers based on those commands
 """
 
+import data
 import quotebot
 import settings
 import time
@@ -53,7 +54,7 @@ def handle_command(command):
       return "gimme a quote number to delete"
     response = quotebot.remove_quote(cmd_list[1])
   elif cmd == '!quote':
-    if len(cmd_list) != 1:  # TODO: test this
+    if len(cmd_list) != 1:
       return "I don't understand that stuff after '!quote'"
     response = quotebot.retrieve_random_quote()
   else:
@@ -108,6 +109,7 @@ def main():
   slack_client = SlackClient(settings.SECRETS['slack_bot_token'])
   if slack_client.rtm_connect():
     print("Quotebot is connected and running.")
+    data.prefetch_quote_ids()  # populate the list of quote ids from the DB
     # infinite loop to continuously consume slack data from rtm api
     while True:
       command, channel = parse_slack_input(slack_client.rtm_read())
