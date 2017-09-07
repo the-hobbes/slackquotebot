@@ -8,7 +8,7 @@ from mock import MagicMock
 class TestQuotebot(unittest.TestCase):
 
   def test_add_quote(self):
-    expected_response = "Quote 123 saved"
+    expected_response = "Quote #123 saved"
     data.save = MagicMock(return_value=123)
     received_response = quotebot.add_quote("Some quote")
     self.assertEqual(expected_response, received_response)
@@ -20,8 +20,14 @@ class TestQuotebot(unittest.TestCase):
     self.assertEqual(expected_response, received_response)
 
   def test_retrieve_random_quote(self):
-    expected_response = "Here's a quote!"
-    data.retrieve = MagicMock(return_value=expected_response)
+    expected_response = "This is a quote."
+    data.retrieve = MagicMock(return_value="This is a quote.")
+    received_response = quotebot.retrieve_random_quote()
+    self.assertEqual(expected_response, received_response)
+
+  def test_retrieve_random_quote_failure(self):
+    expected_response = ":( there was an error getting a quote."
+    data.retrieve = MagicMock(return_value=-1)
     received_response = quotebot.retrieve_random_quote()
     self.assertEqual(expected_response, received_response)
 
