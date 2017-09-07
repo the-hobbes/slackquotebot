@@ -5,6 +5,7 @@ import quotebot
 import unittest
 from mock import MagicMock
 
+
 class TestListener(unittest.TestCase):
 
   def test_handle_addquote(self):
