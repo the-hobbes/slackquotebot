@@ -55,7 +55,3 @@ def remove_quote(quote_id):
 	if not success:
 		return "There was an error deleting quote {}".format(quote_id)
 	return "Quote {} successfully removed".format(quote_id)
-
-
-def command_not_found(cmd):
-	return "Command {} not found".format(cmd)

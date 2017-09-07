@@ -18,6 +18,11 @@ READ_WEBSOCKET_DELAY = 1 # 1 second delay between sampling the firehose
 COMMANDS = ['!addquote', '!deletequote', '!quote']
 
 
+def command_not_found(cmd):
+  """Indicate some command prefixed by ! isn't recognized."""
+  return "Command {} not found".format(cmd)
+
+
 def write_response(response, channel, slack_client):
   """Write responses back to the chat channel.
 
@@ -58,7 +63,7 @@ def handle_command(command):
       return "I don't understand that stuff after '!quote'"
     response = quotebot.retrieve_random_quote()
   else:
-    response = quotebot.command_not_found(cmd)
+    response = command_not_found(cmd)
 
   return response
 
