@@ -8,6 +8,13 @@
 """
 
 import data
+from prometheus_client import Counter
+
+
+QUOTE_REQUESTS = Counter(
+	"quote_commmand_total_requests", 
+	"Total quotebot requests, by request type and result.",
+	["command_type", "result"])
 
 
 def add_quote(quote):
@@ -23,7 +30,10 @@ def add_quote(quote):
 	s_quote = str(quote)
 	id = data.save(s_quote)
 	if id == -1:
+		QUOTE_REQUESTS.labels(command_type="addquote", result="failure").inc()
 		return "There was an error saving the quote"
+
+	QUOTE_REQUESTS.labels(command_type="addquote", result="success").inc()
 	return "Quote #{} saved".format(id)
 
 
@@ -36,8 +46,10 @@ def retrieve_random_quote():
 	"""
 	result = data.retrieve()
 	if result == -1:
+		QUOTE_REQUESTS.labels(command_type="quote", result="failure").inc()
 		return ":( there was an error getting a quote."
 
+	QUOTE_REQUESTS.labels(command_type="quote", result="success").inc()
 	return result
 	
 
@@ -53,5 +65,8 @@ def remove_quote(quote_id):
 	"""
 	success = data.delete(quote_id)
 	if not success:
+		QUOTE_REQUESTS.labels(command_type="deletequote", result="failure").inc()
 		return "There was an error deleting quote {}".format(quote_id)
+
+	QUOTE_REQUESTS.labels(command_type="deletequote", result="success").inc()
 	return "Quote {} successfully removed".format(quote_id)

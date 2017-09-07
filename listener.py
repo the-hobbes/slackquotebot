@@ -11,6 +11,7 @@ import quotebot
 import settings
 import time
 from ConfigParser import SafeConfigParser
+from prometheus_client import start_http_server
 from slackclient import SlackClient
 
 # Set constants
@@ -112,6 +113,7 @@ def main():
   settings.init()
   parse_config()
   slack_client = SlackClient(settings.SECRETS['slack_bot_token'])
+  start_http_server(8000)
   if slack_client.rtm_connect():
     print("Quotebot is connected and running.")
     data.prefetch_quote_ids()  # populate the list of quote ids from the DB

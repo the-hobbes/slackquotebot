@@ -8,6 +8,13 @@ import logging
 import psycopg2
 import random
 import settings
+from prometheus_client import Summary
+
+
+# prefetch_seconds_count: number of times this function was called
+# prefetch_seconds_sum: total amount of time spent in this function
+PREFETCH_TIME = Summary(
+  "prefetch_seconds", 'Time spent prefetching quotes in seconds.')
 
 
 def connect():
@@ -32,6 +39,7 @@ def connect():
   return connection, cursor
 
 
+@PREFETCH_TIME.time()  # record summary statistics
 def prefetch_quote_ids():
   """Populate an array of existing quote IDs.
 
