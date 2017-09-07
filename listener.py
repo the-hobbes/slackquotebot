@@ -58,7 +58,12 @@ def handle_command(command):
   elif cmd == '!deletequote':
     if len(cmd_list) <= 1:
       return "gimme a quote number to delete"
-    response = quotebot.remove_quote(cmd_list[1])
+    quote_id = -1
+    try:
+      quote_id = int(cmd_list[1])
+    except ValueError:
+      return "gimme an actual quote number to delete"
+    response = quotebot.remove_quote(quote_id)
   elif cmd == '!quote':
     if len(cmd_list) != 1:
       return "I don't understand that stuff after '!quote'"

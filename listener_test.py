@@ -6,7 +6,6 @@ import unittest
 from mock import MagicMock
 
 class TestListener(unittest.TestCase):
-	# TODO: Refactor these into parameterized tests.
 
   def test_handle_addquote(self):
     expected_response = "quote added"
@@ -15,10 +14,29 @@ class TestListener(unittest.TestCase):
     received_response = listener.handle_command(fake_command)
     self.assertEqual(expected_response, received_response)
 
+  def test_handle_addquote_fails(self):
+    expected_response = "gimme a quote to add"
+    quotebot.add_quote = MagicMock(return_value=expected_response)
+    fake_command = "!addquote"
+    received_response = listener.handle_command(fake_command)
+    self.assertEqual(expected_response, received_response)
+
   def test_handle_deletequote(self):
     expected_response = "quote deleted"
     quotebot.remove_quote = MagicMock(return_value=expected_response)
-    fake_command = "!deletequote delete this quote"
+    fake_command = "!deletequote 12"
+    received_response = listener.handle_command(fake_command)
+    self.assertEqual(expected_response, received_response)
+
+  def test_handle_deletequote_fails(self):
+    expected_response = "gimme a quote number to delete"
+    fake_command = "!deletequote"
+    received_response = listener.handle_command(fake_command)
+    self.assertEqual(expected_response, received_response)
+
+  def test_handle_deletequote_fails_non_integer(self):
+    expected_response = "gimme an actual quote number to delete"
+    fake_command = "!deletequote 12.1"
     received_response = listener.handle_command(fake_command)
     self.assertEqual(expected_response, received_response)
 
@@ -26,6 +44,12 @@ class TestListener(unittest.TestCase):
     expected_response = "quote retrieved"
     quotebot.retrieve_random_quote = MagicMock(return_value=expected_response)
     fake_command = "!quote"
+    received_response = listener.handle_command(fake_command)
+    self.assertEqual(expected_response, received_response)
+
+  def test_handle_getquote_fails(self):
+    expected_response = "I don't understand that stuff after '!quote'"
+    fake_command = "!quote blahblah"
     received_response = listener.handle_command(fake_command)
     self.assertEqual(expected_response, received_response)
 
