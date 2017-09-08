@@ -29,7 +29,7 @@ def connect():
       - cursor (pyscopg2.cursor), a mechanism to execute postgreSQL commands in
         a database session
   """
-  conn_s = "host='localhost' dbname='{0}' user='{1}' password='{2}'".format(
+  conn_s = "host='database' dbname='{0}' user='{1}' password='{2}'".format(
     settings.SECRETS["dbname"], 
     settings.SECRETS["user"], 
     settings.SECRETS["password"])
