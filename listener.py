@@ -6,6 +6,7 @@
   - trigger handlers based on those commands
 """
 
+import argparse
 import data
 import quotebot
 import settings
@@ -101,8 +102,19 @@ def parse_slack_input(slack_rtm_output):
 
 def parse_config():
   """Parses a config file containing connection secrets."""
+
+  argparser = argparse.ArgumentParser(description="Where are the secrets?")
+  argparser.add_argument(
+    "--secrets", 
+    type=str, 
+    nargs="?", 
+    const="secrets", 
+    help="The path to the secrets file")
+  args = argparser.parse_args()
+  secrets_location = args.secrets
+
   parser = SafeConfigParser()
-  parser.read("secrets")
+  parser.read(args.secrets)
 
   settings.SECRETS['slack_bot_token'] = parser.get(
     "slack_credentials", "bot_api_access_token")
