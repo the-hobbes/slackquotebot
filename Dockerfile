@@ -5,7 +5,7 @@ FROM python:2.7.12
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-ADD . /app
+ADD source/ /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
@@ -14,5 +14,5 @@ RUN pip install -r requirements.txt
 EXPOSE 8080
 
 # Run listener.py when the container launches
-CMD ["python", "listener.py"]
+CMD ["python", "listener.py", "> slackquotebot.log 2>&1"]
 
