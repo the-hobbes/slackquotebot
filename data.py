@@ -51,8 +51,9 @@ def prefetch_quote_ids():
     connection, cursor = connect()
     cursor.execute("SELECT quote_id FROM quotetable ORDER BY quote_id;")
     tuples = cursor.fetchall()
-    if len(QUOTE_LIST) == 0:  # handle an empty database
-      QUOTE_LIST.append("No quotes yet! Add one?")
+    if len(settings.QUOTE_LIST) == 0:  # handle an empty database
+      settings.QUOTE_LIST.append("No quotes yet! Add one?")
+    settings.QUOTE_LIST[:] = []  # clear old items
     settings.QUOTE_LIST = [t[0] for t in tuples]
     cursor.close()
     connection.close()
