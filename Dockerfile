@@ -5,7 +5,9 @@ FROM python:2.7.12
 WORKDIR /app
 
 # Copy the source directory contents into the container at /app
-ADD source/ /app
+ADD *.py /app/
+ADD secrets /app
+ADD requirements.txt /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt

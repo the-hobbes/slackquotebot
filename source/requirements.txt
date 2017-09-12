@@ -1,4 +1,0 @@
-prometheus_client
-psycopg2
-slackclient
-mock
