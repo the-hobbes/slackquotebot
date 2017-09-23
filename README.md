@@ -4,7 +4,7 @@
 ## Purpose
 If you've ever found yourself wanting to preserve an amusing statement from a
 coworker or friend, this bot is for you. You can add and retrieve quotes from a
-slack channel the bot is invited to, providing an amusing and window into the
+slack channel the bot is invited to, providing a context-free window into the
 history of your group.
 
 ## Usage 
